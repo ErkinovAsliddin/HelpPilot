@@ -1,0 +1,39 @@
+Startup error: Error: Could not locate the bindings file. Tried:
+ → C:\Users\User\trek4\node_modules\better-sqlite3\build\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\build\Debug\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\build\Release\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\out\Debug\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\Debug\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\out\Release\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\Release\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\build\default\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\compiled\24.17.0\win32\x64\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\addon-build\release\install-root\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\addon-build\debug\install-root\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\addon-build\default\install-root\better_sqlite3.node
+ → C:\Users\User\trek4\node_modules\better-sqlite3\lib\binding\node-v137-win32-x64\better_sqlite3.node
+    at bindings (C:\Users\User\trek4\node_modules\bindings\bindings.js:126:9)
+    at new Database (C:\Users\User\trek4\node_modules\better-sqlite3\lib\database.js:48:64)
+    at getDb (file:///C:/Users/User/trek4/dist/db/schema.js:13:11)
+    at initDb (file:///C:/Users/User/trek4/dist/db/schema.js:21:28)
+    at main (file:///C:/Users/User/trek4/dist/server.js:35:3)
+    at file:///C:/Users/User/trek4/dist/server.js:66:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:633:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  tries: [
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\build\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\build\\Debug\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\build\\Release\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\out\\Debug\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\Debug\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\out\\Release\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\Release\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\build\\default\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\compiled\\24.17.0\\win32\\x64\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\addon-build\\release\\install-root\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\addon-build\\debug\\install-root\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\addon-build\\default\\install-root\\better_sqlite3.node',
+    'C:\\Users\\User\\trek4\\node_modules\\better-sqlite3\\lib\\binding\\node-v137-win32-x64\\better_sqlite3.node'
+  ]
+}

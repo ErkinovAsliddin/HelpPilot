@@ -1,0 +1,25 @@
+{
+  "name": "helppilot",
+  "version": "1.0.0",
+  "description": "HelpPilot IT Helpdesk Autopilot",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "node dist/server.js",
+    "build:frontend": "cd src/frontend && npm install --legacy-peer-deps && npm run build"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.600.0",
+    "chromadb": "^1.8.1",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.13",
+    "sql.js": "^1.12.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2"
+  }
+}

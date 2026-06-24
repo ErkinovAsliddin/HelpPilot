@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+src/frontend/dist/
+
+# Environment variables (NEVER commit these)
+.env
+*.env
+
+# Database files
+*.db
+*.sqlite
+helppilot.db
+
+# Logs
+*.log
+*.txt
+server_out.txt
+server_err.txt
+srv*.txt
+*_out.txt
+*_err.txt
+*_install.txt
+*_build*.txt
+rebuild_out.txt
+sqlinst.txt
+aws*.txt
+tsc_*.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/settings.json
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage
+coverage/

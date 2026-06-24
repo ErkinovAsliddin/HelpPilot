@@ -1,0 +1,33 @@
+src/agents/classifier.ts(49,7): error TS2322: Type '{}' is not assignable to type 'TicketCategory'.
+src/agents/classifier.ts(50,7): error TS2322: Type '{}' is not assignable to type 'Priority'.
+src/agents/classifier.ts(51,7): error TS2322: Type '{}' is not assignable to type 'string'.
+src/agents/classifier.ts(52,7): error TS2322: Type '{} | null' is not assignable to type 'string | null'.
+  Type '{}' is not assignable to type 'string'.
+src/agents/classifier.ts(53,7): error TS2322: Type '{} | null' is not assignable to type 'string | null'.
+  Type '{}' is not assignable to type 'string'.
+src/agents/emotionAnalyzer.ts(48,11): error TS2322: Type '{}' is not assignable to type 'ChurnRisk'.
+src/agents/emotionAnalyzer.ts(49,11): error TS2322: Type '{}' is not assignable to type 'EmotionalState'.
+src/agents/emotionAnalyzer.ts(55,7): error TS2322: Type '{}' is not assignable to type 'ResponseTone'.
+src/agents/logger.ts(5,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/agents/logger.ts(9,10): error TS2305: Module '"../utils/bedrockClient.js"' has no exported member 'embedText'.
+src/agents/multiModalHandler.ts(4,10): error TS2305: Module '"../utils/bedrockClient.js"' has no exported member 'invokeModel'.
+src/agents/multiModalHandler.ts(6,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/agents/predictionEngine.ts(6,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/agents/resolver.ts(4,10): error TS2305: Module '"../utils/bedrockClient.js"' has no exported member 'invokeModel'.
+src/agents/resolver.ts(7,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/db/chromaInit.ts(6,10): error TS2305: Module '"../utils/bedrockClient.js"' has no exported member 'embedText'.
+src/db/chromaInit.ts(7,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/ingestion/email.ts(9,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/pipeline/orchestrator.ts(5,10): error TS2305: Module '"../agents/classifier.js"' has no exported member 'ClassifierAgent'.
+src/pipeline/orchestrator.ts(6,10): error TS2305: Module '"../agents/kbSearcher.js"' has no exported member 'KBSearcherAgent'.
+src/pipeline/orchestrator.ts(9,10): error TS2305: Module '"../agents/emotionAnalyzer.js"' has no exported member 'EmotionAnalyzerAgent'.
+src/pipeline/orchestrator.ts(12,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/routes/tickets.ts(12,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/server.ts(14,10): error TS2305: Module '"./utils/logger.js"' has no exported member 'log'.
+src/services/deliveryService.ts(8,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/services/healthMonitor.ts(5,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/services/hitlNotifier.ts(7,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/services/incidentNotifier.ts(8,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/services/reasoningTraceService.ts(6,10): error TS2305: Module '"../utils/logger.js"' has no exported member 'log'.
+src/utils/chromaClient.ts(33,52): error TS2345: Argument of type '{ name: string; }' is not assignable to parameter of type 'GetCollectionParams'.
+  Property 'embeddingFunction' is missing in type '{ name: string; }' but required in type 'GetCollectionParams'.

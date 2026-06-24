@@ -1,0 +1,127 @@
+{"level":"info","eventType":"server.db.ready","message":"SQLite ready","timestamp":"2026-06-22T09:24:38.027Z"}
+{"level":"warn","eventType":"chroma.unavailable","message":"ChromaDB not reachable, skipping seed","timestamp":"2026-06-22T09:24:39.415Z"}
+{"level":"info","eventType":"hitl.started","message":"HITL notifier started","timestamp":"2026-06-22T09:24:39.673Z"}
+{"level":"info","eventType":"orchestrator.started","message":"Orchestrator started","timestamp":"2026-06-22T09:24:39.783Z"}
+{"level":"info","eventType":"prediction.started","message":"PredictionEngine started","timestamp":"2026-06-22T09:24:39.847Z"}
+{"level":"info","eventType":"server.ready","message":"Running on port 3000","timestamp":"2026-06-22T09:24:39.989Z"}
+
+====================================================
+  🤖  HelpPilot IT Helpdesk Autopilot
+====================================================
+  ✅  Server:    http://localhost:3000
+  ✅  Health:    http://localhost:3000/api/health
+  🔑  API Key:   your-secret-api-key-here
+====================================================
+
+  Ready to receive tickets!
+
+{"level":"info","eventType":"incident.detected","message":"Incident 4fb515bb-e3e0-43f9-b0ee-886acec69b77 detected, awaiting approval","timestamp":"2026-06-22T09:26:10.124Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"4fb515bb-e3e0-43f9-b0ee-886acec69b77","timestamp":"2026-06-22T09:26:10.128Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident a06682dc-4bba-4cdd-81d5-2e780c037e06 detected, awaiting approval","timestamp":"2026-06-22T09:26:10.138Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"a06682dc-4bba-4cdd-81d5-2e780c037e06","timestamp":"2026-06-22T09:26:10.139Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 34f5a77a-a383-4f9f-891b-6835bbee5eab detected, awaiting approval","timestamp":"2026-06-22T09:26:39.903Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"34f5a77a-a383-4f9f-891b-6835bbee5eab","timestamp":"2026-06-22T09:26:39.910Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 6969a617-4520-4f72-9fb9-e5d2742c9772 detected, awaiting approval","timestamp":"2026-06-22T09:27:09.916Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"6969a617-4520-4f72-9fb9-e5d2742c9772","timestamp":"2026-06-22T09:27:09.921Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident ddeb5c2e-e6f2-411e-b4e6-26caf3c1d92e detected, awaiting approval","timestamp":"2026-06-22T09:28:09.915Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"ddeb5c2e-e6f2-411e-b4e6-26caf3c1d92e","timestamp":"2026-06-22T09:28:09.921Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 9bb0a74f-2cad-4f2d-b2e6-a54e97db724e detected, awaiting approval","timestamp":"2026-06-22T09:28:39.926Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"9bb0a74f-2cad-4f2d-b2e6-a54e97db724e","timestamp":"2026-06-22T09:28:39.983Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 50435d9d-3ac6-41c5-b84c-d829a47d1cae detected, awaiting approval","timestamp":"2026-06-22T09:28:39.991Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"50435d9d-3ac6-41c5-b84c-d829a47d1cae","timestamp":"2026-06-22T09:28:39.992Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident ae004655-5fb7-49ca-8452-58146812f513 detected, awaiting approval","timestamp":"2026-06-22T09:28:39.997Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"ae004655-5fb7-49ca-8452-58146812f513","timestamp":"2026-06-22T09:28:39.999Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident df107860-cc82-4b7c-b6bf-a0f5de183396 detected, awaiting approval","timestamp":"2026-06-22T09:29:09.942Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"df107860-cc82-4b7c-b6bf-a0f5de183396","timestamp":"2026-06-22T09:29:09.945Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 309aa41a-c53a-4820-8021-a3ce2fa56d59 detected, awaiting approval","timestamp":"2026-06-22T09:30:09.974Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"309aa41a-c53a-4820-8021-a3ce2fa56d59","timestamp":"2026-06-22T09:30:09.976Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 957d61ba-223c-46c0-8c32-4e3a9c2cb955 detected, awaiting approval","timestamp":"2026-06-22T09:30:39.967Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"957d61ba-223c-46c0-8c32-4e3a9c2cb955","timestamp":"2026-06-22T09:30:39.968Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident c1f83999-e979-45c8-9b8e-94ea5d7df0c0 detected, awaiting approval","timestamp":"2026-06-22T09:30:39.977Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"c1f83999-e979-45c8-9b8e-94ea5d7df0c0","timestamp":"2026-06-22T09:30:39.979Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 7146d8bb-0056-4bbc-990f-b2b271964099 detected, awaiting approval","timestamp":"2026-06-22T09:31:40.041Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"7146d8bb-0056-4bbc-990f-b2b271964099","timestamp":"2026-06-22T09:31:40.043Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 7d9619ae-71d9-4f6e-aa08-09e8dcc7d4f6 detected, awaiting approval","timestamp":"2026-06-22T09:32:10.064Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"7d9619ae-71d9-4f6e-aa08-09e8dcc7d4f6","timestamp":"2026-06-22T09:32:10.067Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 08cbeb55-2995-40d3-b3f1-14ed37d2cd13 detected, awaiting approval","timestamp":"2026-06-22T09:32:40.070Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"08cbeb55-2995-40d3-b3f1-14ed37d2cd13","timestamp":"2026-06-22T09:32:40.074Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 54928bfe-7bbb-40e9-a4c1-7157e4ee650f detected, awaiting approval","timestamp":"2026-06-22T09:33:10.070Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"54928bfe-7bbb-40e9-a4c1-7157e4ee650f","timestamp":"2026-06-22T09:33:10.072Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 4d96c905-f0fb-4c06-b2da-f47ddf19e7a2 detected, awaiting approval","timestamp":"2026-06-22T09:33:10.080Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"4d96c905-f0fb-4c06-b2da-f47ddf19e7a2","timestamp":"2026-06-22T09:33:10.082Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 5e213775-669e-4692-9572-2196312668a6 detected, awaiting approval","timestamp":"2026-06-22T09:34:10.146Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"5e213775-669e-4692-9572-2196312668a6","timestamp":"2026-06-22T09:34:10.148Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident deab9813-b06c-4c7a-8022-117a7e135244 detected, awaiting approval","timestamp":"2026-06-22T09:34:10.154Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"deab9813-b06c-4c7a-8022-117a7e135244","timestamp":"2026-06-22T09:34:10.157Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident f0c03a58-4de3-4032-b819-163d4fe20537 detected, awaiting approval","timestamp":"2026-06-22T09:34:10.163Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"f0c03a58-4de3-4032-b819-163d4fe20537","timestamp":"2026-06-22T09:34:10.164Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 4f0ecaf7-b8ff-4e8f-ab77-7c4310ebef2b detected, awaiting approval","timestamp":"2026-06-22T09:34:40.150Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"4f0ecaf7-b8ff-4e8f-ab77-7c4310ebef2b","timestamp":"2026-06-22T09:34:40.151Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 934fc34c-61b6-4b75-b178-7782a041c6e5 detected, awaiting approval","timestamp":"2026-06-22T09:36:10.274Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"934fc34c-61b6-4b75-b178-7782a041c6e5","timestamp":"2026-06-22T09:36:10.276Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident e0db95d4-8ba9-4aff-aae9-e77ee9c3ee45 detected, awaiting approval","timestamp":"2026-06-22T09:36:10.285Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"e0db95d4-8ba9-4aff-aae9-e77ee9c3ee45","timestamp":"2026-06-22T09:36:10.286Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 3c31a533-70fe-4f1d-903d-b59a1eb2f832 detected, awaiting approval","timestamp":"2026-06-22T09:36:10.292Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"3c31a533-70fe-4f1d-903d-b59a1eb2f832","timestamp":"2026-06-22T09:36:10.294Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident f04a4966-acf3-4c79-a512-036f0109f4be detected, awaiting approval","timestamp":"2026-06-22T09:36:40.360Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"f04a4966-acf3-4c79-a512-036f0109f4be","timestamp":"2026-06-22T09:36:40.410Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 3d6bc5c4-f358-4427-ab6b-c157bec4076c detected, awaiting approval","timestamp":"2026-06-22T09:37:10.351Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"3d6bc5c4-f358-4427-ab6b-c157bec4076c","timestamp":"2026-06-22T09:37:10.353Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 4aac2895-8530-48f3-b187-72819bf7bd8c detected, awaiting approval","timestamp":"2026-06-22T09:38:10.365Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"4aac2895-8530-48f3-b187-72819bf7bd8c","timestamp":"2026-06-22T09:38:10.368Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 180220cc-731c-447a-be12-448b1e5a2b4b detected, awaiting approval","timestamp":"2026-06-22T09:38:10.377Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"180220cc-731c-447a-be12-448b1e5a2b4b","timestamp":"2026-06-22T09:38:10.382Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident c2047253-6315-42d0-94a7-1e8e09a08e71 detected, awaiting approval","timestamp":"2026-06-22T09:38:40.365Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"c2047253-6315-42d0-94a7-1e8e09a08e71","timestamp":"2026-06-22T09:38:40.367Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident b600af0d-77a7-4bbc-9b08-237a340564db detected, awaiting approval","timestamp":"2026-06-22T09:39:10.461Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"b600af0d-77a7-4bbc-9b08-237a340564db","timestamp":"2026-06-22T09:39:10.525Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 2ec9e516-148b-4104-9192-bd00f6140257 detected, awaiting approval","timestamp":"2026-06-22T09:39:40.389Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"2ec9e516-148b-4104-9192-bd00f6140257","timestamp":"2026-06-22T09:39:40.391Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 8ea1acc1-7ecd-4368-aeb8-8e5a381c0ee3 detected, awaiting approval","timestamp":"2026-06-22T09:39:40.531Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"8ea1acc1-7ecd-4368-aeb8-8e5a381c0ee3","timestamp":"2026-06-22T09:39:40.535Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident de42dea3-5a2f-43ca-be84-24f81ad10a02 detected, awaiting approval","timestamp":"2026-06-22T09:40:10.404Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"de42dea3-5a2f-43ca-be84-24f81ad10a02","timestamp":"2026-06-22T09:40:10.405Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 9836e590-4e12-46b8-b50e-00b9491fffe4 detected, awaiting approval","timestamp":"2026-06-22T09:41:10.430Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"9836e590-4e12-46b8-b50e-00b9491fffe4","timestamp":"2026-06-22T09:41:10.432Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 4592de2e-5456-48e2-9a1f-402743f36faf detected, awaiting approval","timestamp":"2026-06-22T09:41:40.442Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"4592de2e-5456-48e2-9a1f-402743f36faf","timestamp":"2026-06-22T09:41:40.463Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident d749a352-b1de-40d3-bda7-388d921cf709 detected, awaiting approval","timestamp":"2026-06-22T09:41:40.674Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"d749a352-b1de-40d3-bda7-388d921cf709","timestamp":"2026-06-22T09:41:40.687Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident eb516a8b-ddf4-4a4b-8423-a01dd4d66b5c detected, awaiting approval","timestamp":"2026-06-22T09:42:40.455Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"eb516a8b-ddf4-4a4b-8423-a01dd4d66b5c","timestamp":"2026-06-22T09:42:40.459Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 0d0349ea-295d-4968-9d47-63b314dd5460 detected, awaiting approval","timestamp":"2026-06-22T09:42:40.589Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"0d0349ea-295d-4968-9d47-63b314dd5460","timestamp":"2026-06-22T09:42:40.590Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 8c1d4050-1fbc-45bc-8e9a-cd8d20266a3c detected, awaiting approval","timestamp":"2026-06-22T09:42:40.642Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"8c1d4050-1fbc-45bc-8e9a-cd8d20266a3c","timestamp":"2026-06-22T09:42:40.644Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 4ae0f178-45d4-4174-9e84-9e28f19763da detected, awaiting approval","timestamp":"2026-06-22T09:43:40.465Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"4ae0f178-45d4-4174-9e84-9e28f19763da","timestamp":"2026-06-22T09:43:40.466Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 7895cdd1-54e8-41a1-ad29-10b7b0a0c816 detected, awaiting approval","timestamp":"2026-06-22T09:44:10.475Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"7895cdd1-54e8-41a1-ad29-10b7b0a0c816","timestamp":"2026-06-22T09:44:10.476Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident ef03a950-a547-474f-b26d-a039e80ce1d9 detected, awaiting approval","timestamp":"2026-06-22T09:44:40.474Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"ef03a950-a547-474f-b26d-a039e80ce1d9","timestamp":"2026-06-22T09:44:40.476Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 06434907-103b-47b8-a18d-d97bc9c66e50 detected, awaiting approval","timestamp":"2026-06-22T09:45:40.503Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"06434907-103b-47b8-a18d-d97bc9c66e50","timestamp":"2026-06-22T09:45:40.506Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 56ebd9c5-5906-4110-a1c7-d2edc6824cd2 detected, awaiting approval","timestamp":"2026-06-22T09:45:40.511Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"56ebd9c5-5906-4110-a1c7-d2edc6824cd2","timestamp":"2026-06-22T09:45:40.514Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 4d8aa6c8-c9a5-4cde-b2a2-16610a8ab2d9 detected, awaiting approval","timestamp":"2026-06-22T09:46:10.517Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"4d8aa6c8-c9a5-4cde-b2a2-16610a8ab2d9","timestamp":"2026-06-22T09:46:10.518Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 36e61cac-aaf0-47a3-a2aa-2fc2c9c152cf detected, awaiting approval","timestamp":"2026-06-22T09:46:10.524Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"36e61cac-aaf0-47a3-a2aa-2fc2c9c152cf","timestamp":"2026-06-22T09:46:10.526Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident cf2372af-6ce9-4b24-bb02-c4ef64c8e73a detected, awaiting approval","timestamp":"2026-06-22T09:47:10.544Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"cf2372af-6ce9-4b24-bb02-c4ef64c8e73a","timestamp":"2026-06-22T09:47:10.546Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 3b1cdf31-0ba3-4a56-8bfc-c68a82776de2 detected, awaiting approval","timestamp":"2026-06-22T09:47:10.600Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"3b1cdf31-0ba3-4a56-8bfc-c68a82776de2","timestamp":"2026-06-22T09:47:10.601Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 8c21c6f7-1348-466c-a2c5-648f1fd1fd1b detected, awaiting approval","timestamp":"2026-06-22T09:47:40.557Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"8c21c6f7-1348-466c-a2c5-648f1fd1fd1b","timestamp":"2026-06-22T09:47:40.559Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 6d28ecc1-b5b2-43ac-9f94-f5d77c4c0012 detected, awaiting approval","timestamp":"2026-06-22T09:48:40.580Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"6d28ecc1-b5b2-43ac-9f94-f5d77c4c0012","timestamp":"2026-06-22T09:48:40.583Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 98d67f27-964b-4f8e-84e1-372ce26c3019 detected, awaiting approval","timestamp":"2026-06-22T09:49:10.593Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: PRINTER_OFFLINE","incidentId":"98d67f27-964b-4f8e-84e1-372ce26c3019","timestamp":"2026-06-22T09:49:10.594Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 4d565bb6-3564-473c-b8fa-c42579d0f1a4 detected, awaiting approval","timestamp":"2026-06-22T09:49:40.597Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: EMAIL_BOUNCE","incidentId":"4d565bb6-3564-473c-b8fa-c42579d0f1a4","timestamp":"2026-06-22T09:49:40.600Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 0c7c4d1a-4ab1-410e-8418-4b0fc16eaa77 detected, awaiting approval","timestamp":"2026-06-22T09:49:40.606Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: VPN_AUTH_FAIL","incidentId":"0c7c4d1a-4ab1-410e-8418-4b0fc16eaa77","timestamp":"2026-06-22T09:49:40.608Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 1fb04b1b-18b6-43b3-a070-02f6e9816f6b detected, awaiting approval","timestamp":"2026-06-22T09:50:10.612Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: DISK_QUOTA_EXCEEDED","incidentId":"1fb04b1b-18b6-43b3-a070-02f6e9816f6b","timestamp":"2026-06-22T09:50:10.614Z"}
+{"level":"info","eventType":"incident.detected","message":"Incident 55c2ff83-c4d0-4548-9c07-289ebf317671 detected, awaiting approval","timestamp":"2026-06-22T09:51:10.640Z"}
+{"level":"info","eventType":"prediction.incident","message":"Incident created: LDAP_TIMEOUT","incidentId":"55c2ff83-c4d0-4548-9c07-289ebf317671","timestamp":"2026-06-22T09:51:10.642Z"}

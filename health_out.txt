@@ -1,0 +1,1 @@
+{"status":"unavailable","services":{"bedrock":"unavailable","chromadb":"unavailable","sqlite":"healthy","email":"healthy"},"autoResolutionEnabled":true,"checkedAt":"2026-06-22T09:31:18.645Z"}
