@@ -4,57 +4,68 @@ import { useNavigate } from 'react-router-dom';
 export default function LoginPage() {
   const [key, setKey] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!key.trim()) { setError('Please enter your API key'); return; }
-    // Quick validation
+    if (!key.trim()) { setError('API key is required'); return; }
+    setLoading(true); setError('');
     try {
       const res = await fetch('/api/health');
       if (res.ok) {
         sessionStorage.setItem('apiKey', key.trim());
-        navigate('/tickets');
+        navigate('/welcome');
       } else {
-        setError('Server error — check server is running');
+        setError('Server error — make sure HelpPilot is running');
       }
     } catch {
-      setError('Cannot reach server — is HelpPilot running?');
-    }
+      setError('Cannot reach server at localhost:3000');
+    } finally { setLoading(false); }
   };
 
   return (
     <div className="login-page">
-      <div className="login-card">
-        <div className="login-logo">🤖</div>
-        <div className="login-title">HelpPilot</div>
-        <div className="login-sub">IT Helpdesk Autopilot · Sign in to continue</div>
+      <div className="login-wrap">
+        <div className="login-hero">
+          <div className="login-logo">🤖</div>
+          <div className="login-title">HelpPilot</div>
+          <div className="login-sub">AI-Powered IT Helpdesk Autopilot · Qwen-Powered</div>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          {error && <div className="alert alert-error" style={{marginBottom:16}}>{error}</div>}
-          <div className="form-group">
-            <label className="form-label">API Key</label>
-            <input
-              className="form-input"
-              type="password"
-              value={key}
-              onChange={e => { setKey(e.target.value); setError(''); }}
-              placeholder="Enter your API key"
-              autoFocus
-            />
-            <div style={{fontSize:11,color:'var(--text-dim)',marginTop:6}}>
-              Default key: <code style={{color:'var(--primary-light)'}}>helppilot-demo-key-2024</code>
+        <div className="login-card">
+          <form onSubmit={submit}>
+            {error && <div className="alert alert-error">{error}</div>}
+            <div style={{marginBottom:20}}>
+              <label className="form-label">API Key</label>
+              <input className="form-input" type="password" value={key}
+                onChange={e => { setKey(e.target.value); setError(''); }}
+                placeholder="Enter your API key" autoFocus autoComplete="off" />
+              <div style={{fontSize:11,color:'var(--text-dim)',marginTop:7,lineHeight:1.4}}>
+                Default: <code style={{color:'var(--primary-light,#a5b4fc)',background:'rgba(99,102,241,.1)',padding:'1px 6px',borderRadius:3}}>helppilot-demo-key-2024</code>
+              </div>
             </div>
-          </div>
-          <button type="submit" className="btn btn-primary" style={{width:'100%',justifyContent:'center',padding:'11px'}}>
-            Sign In →
-          </button>
-        </form>
+            <button type="submit" className="btn btn-primary" style={{width:'100%',justifyContent:'center',padding:'11px 0',fontSize:14}}
+              disabled={loading}>
+              {loading ? <><span className="spinner" style={{width:14,height:14}}></span> Signing in…</> : <>Sign In →</>}
+            </button>
+          </form>
 
-        <div style={{marginTop:24,padding:'14px',background:'rgba(99,102,241,0.08)',borderRadius:8,border:'1px solid rgba(99,102,241,0.2)'}}>
-          <div style={{fontSize:11,fontWeight:700,color:'var(--primary-light)',marginBottom:6,textTransform:'uppercase',letterSpacing:'0.06em'}}>System Status</div>
-          <div style={{fontSize:12,color:'var(--text-muted)'}}>Server running on <span style={{color:'var(--success)'}}>port 3000</span></div>
-          <div style={{fontSize:12,color:'var(--text-muted)'}}>Pipeline: <span style={{color:'var(--success)'}}>active</span></div>
+          <hr className="divider" />
+
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            {[
+              ['🤖','Qwen AI','qwen-max + qwen-turbo'],
+              ['🔒','HITL','Human-in-the-loop'],
+              ['⚡','Pipeline','Multi-agent workflow'],
+              ['📊','Analytics','Real-time metrics'],
+            ].map(([icon, title, desc]) => (
+              <div key={title} style={{background:'rgba(99,102,241,.04)',border:'1px solid var(--border)',borderRadius:8,padding:'10px 12px'}}>
+                <div style={{fontSize:14,marginBottom:3}}>{icon} <span style={{fontSize:12,fontWeight:600,color:'var(--text-muted)'}}>{title}</span></div>
+                <div style={{fontSize:11,color:'var(--text-dim)'}}>{desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

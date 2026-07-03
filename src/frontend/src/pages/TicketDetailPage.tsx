@@ -1,245 +1,300 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTicket } from '../hooks/useTicket.ts';
 import { useState } from 'react';
+import { useTicket } from '../hooks/useTicket.ts';
 import { apiClient } from '../api/client.ts';
-
-const EMOTION_CLASS: Record<string,string> = { calm:'emotion-calm', stressed:'emotion-stressed', angry:'emotion-angry', desperate:'emotion-desperate' };
+import PipelineVisualizer from '../components/PipelineVisualizer/PipelineVisualizer.tsx';
+import ConfidenceTooltip from '../components/shared/ConfidenceTooltip.tsx';
 
 export default function TicketDetailPage() {
-  const { id } = useParams<{id:string}>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { ticket, loading } = useTicket(id!);
   const [editing, setEditing] = useState(false);
-  const [editText, setEditText] = useState('');
-  const [actionError, setActionError] = useState('');
-  const [actionDone, setActionDone] = useState('');
-  const [actionLoading, setActionLoading] = useState(false);
+  const [editedText, setEditedText] = useState('');
+  const [approvalLoading, setApprovalLoading] = useState(false);
+  const [approvalMsg, setApprovalMsg] = useState('');
+  const [approvalErr, setApprovalErr] = useState('');
 
-  if (loading) return <div className="page"><div style={{display:'flex',alignItems:'center',gap:12,color:'var(--text-muted)'}}><div className="spinner"></div>Loading ticket…</div></div>;
+  if (loading) return (
+    <div style={{ padding: 48, textAlign: 'center' }}>
+      <div className="spinner" style={{ margin: '0 auto 12px', width: 24, height: 24, borderWidth: 3 }}></div>
+      <div style={{ color: 'var(--text-dim)' }}>Loading ticket…</div>
+    </div>
+  );
   if (!ticket) return <div className="page"><div className="alert alert-error">Ticket not found.</div></div>;
 
-  const kbResults = ticket.kb_results ? JSON.parse(ticket.kb_results) as Array<{title:string;summary:string;similarityScore?:number;type?:string}> : [];
+  const kbResults = (() => { try { return JSON.parse(ticket.kb_results || '[]'); } catch { return []; } })();
+  const isPending = ticket.status === 'pending-approval';
 
-  const doAction = async (action: string) => {
-    setActionLoading(true); setActionError(''); setActionDone('');
+  const doApproval = async (action: string) => {
+    setApprovalLoading(true); setApprovalErr(''); setApprovalMsg('');
     try {
       await apiClient.post('/approvals', {
-        ticketId: ticket.id,
-        action,
+        ticketId: ticket.id, action,
         adminId: `admin-${Date.now()}`,
-        editedResponse: action === 'edit-approve' ? editText : undefined,
+        editedResponse: action === 'edit-approve' ? editedText : undefined,
       });
-      setActionDone(`✅ ${action === 'reject' ? 'Rejected' : 'Approved'} successfully`);
-      setTimeout(() => navigate('/tickets'), 1500);
-    } catch (e: any) {
-      setActionError(e.response?.data?.error || 'Action failed');
-    } finally { setActionLoading(false); }
+      setApprovalMsg(action === 'reject' ? 'Ticket escalated to human agent.' : 'Response approved and dispatched!');
+      setEditing(false);
+    } catch (err: any) {
+      setApprovalErr(err.response?.data?.error || 'Action failed');
+    } finally { setApprovalLoading(false); }
   };
 
-  const scoreColor = (s?: number) => !s ? 'var(--text-dim)' : s > 85 ? 'var(--success)' : s > 60 ? 'var(--warning)' : 'var(--danger)';
+  const stateColor = {
+    calm: '#34d399', stressed: '#fcd34d', angry: '#fb923c', desperate: '#f87171'
+  } as any;
 
   return (
     <div>
       <div className="topbar">
-        <div style={{display:'flex',alignItems:'center',gap:12}}>
-          <button className="btn btn-ghost btn-sm" onClick={() => navigate(-1)}>← Back</button>
-          <div>
-            <div className="topbar-title">{ticket.subject || '(no subject)'}</div>
-            <div className="topbar-subtitle" style={{fontFamily:'monospace',fontSize:11}}>{ticket.id}</div>
-          </div>
+        <div className="topbar-left">
+          <h1 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate(-1)}>← Back</button>
+            <span style={{ fontSize: 15 }}>{ticket.subject || '(no subject)'}</span>
+          </h1>
+          <p style={{ paddingLeft: 80 }}>
+            <span className={`badge ${ticket.status}`}>{ticket.status}</span>
+            {ticket.priority && <span className={`priority-badge ${ticket.priority}`} style={{ marginLeft: 6 }}>{ticket.priority}</span>}
+            {ticket.category && <span className="tag" style={{ marginLeft: 6 }}>{ticket.category}</span>}
+          </p>
         </div>
-        <div style={{display:'flex',gap:8,alignItems:'center'}}>
-          <span className={`badge-priority ${ticket.priority || 'low'}`}>{ticket.priority || '—'}</span>
-          <span className={`badge-status ${ticket.status}`}>{ticket.status}</span>
-        </div>
+        <div style={{ fontSize: 11, color: 'var(--text-dim)', fontFamily: 'monospace' }}>{ticket.id}</div>
       </div>
 
-      <div className="page" style={{display:'grid',gridTemplateColumns:'1fr 360px',gap:20}}>
-        {/* LEFT COLUMN */}
-        <div>
-          {/* Ticket body */}
-          <div className="card" style={{marginBottom:20}}>
-            <div className="card-title">📋 Ticket Content</div>
-            <div style={{background:'var(--bg)',borderRadius:8,padding:'14px 16px',border:'1px solid var(--border)',marginBottom:12}}>
-              <div style={{fontSize:13,color:'var(--text)',lineHeight:'1.7',whiteSpace:'pre-wrap'}}>{ticket.body || '(no body)'}</div>
+      <div className="page">
+        <div className="grid-2">
+          {/* LEFT COLUMN */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* Ticket body */}
+            <div className="card">
+              <div className="card-header"><div className="card-title">📄 Ticket Content</div></div>
+              <div className="card-body">
+                {ticket.subject && <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 10 }}>{ticket.subject}</div>}
+                <div className="scroll-text" style={{ maxHeight: 160 }}>{ticket.body || '(no body)'}</div>
+                {ticket.translated_body && (
+                  <div style={{ marginTop: 12, padding: 10, background: 'rgba(99,102,241,.06)', borderRadius: 8, border: '1px solid rgba(99,102,241,.15)' }}>
+                    <div style={{ fontSize: 11, color: 'var(--primary-light,#a5b4fc)', fontWeight: 700, marginBottom: 4 }}>
+                      🌐 AUTO-TRANSLATED ({ticket.detected_language?.toUpperCase()})
+                    </div>
+                    <div className="scroll-text">{ticket.translated_body}</div>
+                  </div>
+                )}
+              </div>
             </div>
-            {ticket.translated_body && (
-              <div style={{marginTop:8}}>
-                <div style={{fontSize:11,color:'var(--text-dim)',marginBottom:6,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.05em'}}>
-                  Translated from {ticket.detected_language}
+
+            {/* AI Classification */}
+            <div className="card">
+              <div className="card-header">
+                <div className="card-title">🤖 AI Classification</div>
+                <span className="ai-badge">Qwen</span>
+              </div>
+              <div className="card-body">
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 20px', fontSize: 13 }}>
+                  {[
+                    ['Category', ticket.category],
+                    ['Priority', ticket.priority],
+                    ['Sentiment', ticket.sentiment],
+                    ['Language', ticket.detected_language || 'English'],
+                  ].map(([l, v]) => v ? (
+                    <div key={l}>
+                      <div style={{ color: 'var(--text-dim)', fontSize: 11, marginBottom: 2 }}>{l}</div>
+                      <div style={{ fontWeight: 600 }}>{String(v).replace(/-/g, ' ')}</div>
+                    </div>
+                  ) : null)}
                 </div>
-                <div style={{background:'rgba(99,102,241,0.05)',border:'1px solid rgba(99,102,241,0.15)',borderRadius:8,padding:'12px 14px',fontSize:13,color:'var(--text-muted)',lineHeight:'1.7'}}>
-                  {ticket.translated_body}
+              </div>
+            </div>
+
+            {/* Emotion Analysis */}
+            {ticket.emotional_state && (
+              <div className="card">
+                <div className="card-header"><div className="card-title">💭 Emotion Analysis</div></div>
+                <div className="card-body">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: stateColor[ticket.emotional_state] || 'var(--text)' }}>
+                      {ticket.emotional_state?.toUpperCase()}
+                    </div>
+                    {ticket.churn_risk && <span className={`badge ${ticket.churn_risk === 'critical' ? 'escalated' : 'pending-approval'}`}>churn: {ticket.churn_risk}</span>}
+                    {ticket.vip_flag ? <span className="badge resolved">⭐ VIP</span> : null}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    {[
+                      ['Frustration', ticket.frustration_score, 10],
+                      ['Urgency', ticket.urgency_score, 10],
+                    ].map(([label, val, max]: any) => (
+                      <div key={label}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-dim)', marginBottom: 4 }}>
+                          <span>{label}</span><span style={{ fontWeight: 700 }}>{val}/{max}</span>
+                        </div>
+                        <div className="progress">
+                          <div className={`progress-bar ${val > 7 ? 'red' : val > 4 ? 'yellow' : 'green'}`} style={{ width: `${(val / max) * 100}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {ticket.emotion_reasoning && <div style={{ marginTop: 10, fontSize: 12, color: 'var(--text-dim)', fontStyle: 'italic' }}>"{ticket.emotion_reasoning}"</div>}
+                </div>
+              </div>
+            )}
+
+            {/* KB Results */}
+            {kbResults.length > 0 && (
+              <div className="card">
+                <div className="card-header"><div className="card-title">🔍 Knowledge Base Matches</div></div>
+                <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {kbResults.map((r: any, i: number) => (
+                    <div key={i} style={{ padding: 12, background: 'rgba(99,102,241,.04)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                        <span style={{ fontWeight: 600, fontSize: 13 }}>{r.title}</span>
+                        {r.similarityScore && (
+                          <span style={{ fontSize: 11, fontWeight: 700, color: r.similarityScore > 0.7 ? '#34d399' : '#fcd34d' }}>
+                            {(r.similarityScore * 100).toFixed(0)}% match
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{r.summary}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Classification */}
-          <div className="card" style={{marginBottom:20}}>
-            <div className="card-title">🔬 Classification</div>
-            <div className="detail-grid">
-              <div className="detail-label">Category</div>   <div className="detail-value">{ticket.category || '—'}</div>
-              <div className="detail-label">Priority</div>   <div className="detail-value"><span className={`badge-priority ${ticket.priority||'low'}`}>{ticket.priority||'—'}</span></div>
-              <div className="detail-label">Sentiment</div>  <div className="detail-value">{ticket.sentiment || '—'}</div>
-              <div className="detail-label">Channel</div>    <div className="detail-value">{ticket.source_channel || '—'}</div>
-              <div className="detail-label">Submitted</div>  <div className="detail-value">{new Date(ticket.received_at).toLocaleString()}</div>
-              {ticket.submitter_email && <><div className="detail-label">Submitter</div><div className="detail-value">{ticket.submitter_email}</div></>}
-            </div>
-          </div>
+          {/* RIGHT COLUMN */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-          {/* KB Results */}
-          {kbResults.length > 0 && (
-            <div className="card" style={{marginBottom:20}}>
-              <div className="card-title">📚 Knowledge Base Results</div>
-              {kbResults.map((r, i) => (
-                <div key={i} style={{background:'var(--bg)',borderRadius:8,padding:'12px 14px',border:'1px solid var(--border)',marginBottom:8}}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:4}}>
-                    <span style={{fontWeight:600,fontSize:13}}>{r.title}</span>
-                    {r.similarityScore != null && (
-                      <span style={{fontSize:11,fontWeight:700,color:r.similarityScore>0.7?'var(--success)':'var(--warning)',background:'rgba(0,0,0,0.2)',padding:'2px 8px',borderRadius:4}}>
-                        {(r.similarityScore*100).toFixed(0)}%
-                      </span>
+            {/* Confidence */}
+            {ticket.confidence_score != null && (
+              <div className="card">
+                <div className="card-header"><div className="card-title">📊 AI Confidence Score</div></div>
+                <div className="card-body">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
+                    <div style={{ fontSize: 40, fontWeight: 800, color: ticket.confidence_score > 85 ? '#34d399' : ticket.confidence_score > 60 ? '#fcd34d' : '#f87171', lineHeight: 1 }}>
+                      {ticket.confidence_score.toFixed(0)}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600 }}>{ticket.confidence_score > 85 ? 'High Confidence' : ticket.confidence_score > 60 ? 'Medium Confidence' : 'Low Confidence'}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>/ 100 points</div>
+                    </div>
+                    <div style={{ marginLeft: 'auto' }}>
+                      <ConfidenceTooltip score={ticket.confidence_score} explanation={ticket.confidence_explanation} />
+                    </div>
+                  </div>
+                  <div className="progress" style={{ height: 6 }}>
+                    <div className={`progress-bar ${ticket.confidence_score > 85 ? 'green' : ticket.confidence_score > 60 ? 'yellow' : 'red'}`}
+                      style={{ width: `${ticket.confidence_score}%` }} />
+                  </div>
+                  {ticket.confidence_explanation && (
+                    <div style={{ marginTop: 10, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      {ticket.confidence_explanation}
+                    </div>
+                  )}
+                  <div style={{ marginTop: 8, fontSize: 11, color: 'var(--text-dim)', fontStyle: 'italic' }}>
+                    💡 Hover the score above for a detailed breakdown
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* HITL Approval Panel */}
+            {isPending && (
+              <div className="card" style={{ border: '1px solid rgba(249,115,22,.3)', background: 'rgba(249,115,22,.04)' }}>
+                <div className="card-header" style={{ borderColor: 'rgba(249,115,22,.2)' }}>
+                  <div className="card-title" style={{ color: '#fb923c' }}>🔔 Approval Required</div>
+                  <span className="badge pending-approval">HITL Checkpoint</span>
+                </div>
+                <div className="card-body">
+                  {approvalMsg && <div className="alert alert-success">{approvalMsg}</div>}
+                  {approvalErr && <div className="alert alert-error">{approvalErr}</div>}
+
+                  <div style={{ marginBottom: 14 }}>
+                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6, fontWeight: 600 }}>AI DRAFT RESPONSE</div>
+                    {editing ? (
+                      <textarea className="form-input" value={editedText} onChange={e => setEditedText(e.target.value)}
+                        rows={6} placeholder="Edit the response…" />
+                    ) : (
+                      <div style={{ background: 'rgba(0,0,0,.2)', borderRadius: 8, padding: 12, fontSize: 13, lineHeight: 1.6, color: 'var(--text-muted)', whiteSpace: 'pre-wrap', maxHeight: 200, overflowY: 'auto' }}>
+                        {ticket.draft_response || 'No draft available'}
+                      </div>
                     )}
                   </div>
-                  <div style={{fontSize:12,color:'var(--text-muted)',lineHeight:'1.6'}}>{r.summary}</div>
-                  {r.type && <div style={{fontSize:10,color:'var(--text-dim)',marginTop:4,textTransform:'uppercase',letterSpacing:'0.04em'}}>{r.type.replace(/_/g,' ')}</div>}
-                </div>
-              ))}
-            </div>
-          )}
 
-          {/* Draft / Final Response */}
-          {(ticket.draft_response || ticket.final_response) && (
-            <div className="card" style={{marginBottom:20}}>
-              <div className="card-title">
-                {ticket.final_response ? '✅ Final Response Sent' : '📝 Draft Response'}
-                {ticket.confidence_score != null && (
-                  <span style={{marginLeft:'auto',fontSize:12,color:scoreColor(ticket.confidence_score),fontWeight:700}}>
-                    Confidence: {ticket.confidence_score.toFixed(0)}%
-                  </span>
-                )}
-              </div>
-              {ticket.confidence_explanation && (
-                <div style={{fontSize:12,color:'var(--text-dim)',marginBottom:12,lineHeight:'1.6'}}>{ticket.confidence_explanation}</div>
-              )}
-              <div style={{background:'var(--bg)',borderRadius:8,padding:'14px 16px',border:'1px solid var(--border)',whiteSpace:'pre-wrap',fontSize:13,color:'var(--text)',lineHeight:'1.7'}}>
-                {ticket.final_response || ticket.draft_response}
-              </div>
-              {ticket.translated_response && (
-                <div style={{marginTop:10,background:'rgba(99,102,241,0.05)',borderRadius:8,padding:'12px 14px',border:'1px solid rgba(99,102,241,0.15)',whiteSpace:'pre-wrap',fontSize:13,color:'var(--text-muted)',lineHeight:'1.7'}}>
-                  <div style={{fontSize:11,color:'var(--primary-light)',marginBottom:6,fontWeight:700,textTransform:'uppercase'}}>Translated Response</div>
-                  {ticket.translated_response}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Approval Panel */}
-          {ticket.status === 'pending-approval' && !actionDone && (
-            <div className="card" style={{border:'1px solid rgba(249,115,22,0.3)',background:'rgba(249,115,22,0.05)'}}>
-              <div className="card-title" style={{color:'var(--orange)'}}>⚡ Approval Required</div>
-              <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16}}>Review the draft response above before sending to the submitter.</p>
-
-              {actionError && <div className="alert alert-error">{actionError}</div>}
-
-              {editing ? (
-                <div style={{marginBottom:16}}>
-                  <label className="form-label">Edit Response</label>
-                  <textarea className="form-input" rows={6} value={editText} onChange={e=>setEditText(e.target.value)}
-                    placeholder={ticket.draft_response || ''} />
-                </div>
-              ) : null}
-
-              <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-                <button className="btn btn-success" disabled={actionLoading} onClick={() => doAction('approve')}>
-                  ✅ Approve & Send
-                </button>
-                {!editing ? (
-                  <button className="btn btn-warning" onClick={() => { setEditing(true); setEditText(ticket.draft_response||''); }}>
-                    ✏️ Edit Response
-                  </button>
-                ) : (
-                  <button className="btn btn-warning" disabled={actionLoading || !editText} onClick={() => doAction('edit-approve')}>
-                    💾 Save & Approve
-                  </button>
-                )}
-                <button className="btn btn-danger" disabled={actionLoading} onClick={() => doAction('reject')}>
-                  ❌ Reject
-                </button>
-                {editing && <button className="btn btn-ghost" onClick={() => setEditing(false)}>Cancel</button>}
-              </div>
-            </div>
-          )}
-          {actionDone && <div className="alert alert-success">{actionDone}</div>}
-        </div>
-
-        {/* RIGHT COLUMN */}
-        <div>
-          {/* Emotion Analysis */}
-          {ticket.emotional_state && (
-            <div className="card" style={{marginBottom:16}}>
-              <div className="card-title">🧠 Emotion Analysis</div>
-              <div style={{marginBottom:12}}>
-                <span className={`emotion-badge ${EMOTION_CLASS[ticket.emotional_state]||'emotion-calm'}`}>
-                  {ticket.emotional_state}
-                </span>
-                {ticket.vip_flag ? <span style={{marginLeft:8,fontSize:11,background:'rgba(245,158,11,0.15)',color:'var(--warning)',padding:'2px 8px',borderRadius:4,fontWeight:700}}>⭐ VIP</span> : null}
-              </div>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:12}}>
-                <div style={{background:'var(--bg)',borderRadius:6,padding:'8px 10px',textAlign:'center',border:'1px solid var(--border)'}}>
-                  <div style={{fontSize:20,fontWeight:800,color:'var(--orange)'}}>{ticket.frustration_score ?? '—'}</div>
-                  <div style={{fontSize:10,color:'var(--text-dim)',textTransform:'uppercase',letterSpacing:'0.04em'}}>Frustration</div>
-                </div>
-                <div style={{background:'var(--bg)',borderRadius:6,padding:'8px 10px',textAlign:'center',border:'1px solid var(--border)'}}>
-                  <div style={{fontSize:20,fontWeight:800,color:'var(--danger)'}}>{ticket.urgency_score ?? '—'}</div>
-                  <div style={{fontSize:10,color:'var(--text-dim)',textTransform:'uppercase',letterSpacing:'0.04em'}}>Urgency</div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {!editing ? (
+                      <>
+                        <button className="btn btn-success" disabled={approvalLoading} onClick={() => doApproval('approve')}>
+                          ✅ Approve & Send
+                        </button>
+                        <button className="btn btn-warning" onClick={() => { setEditing(true); setEditedText(ticket.draft_response || ''); }}>
+                          ✏️ Edit Response
+                        </button>
+                        <button className="btn btn-danger" disabled={approvalLoading} onClick={() => doApproval('reject')}>
+                          ❌ Reject
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="btn btn-primary" disabled={approvalLoading || !editedText.trim()} onClick={() => doApproval('edit-approve')}>
+                          💾 Save & Approve
+                        </button>
+                        <button className="btn btn-ghost" onClick={() => setEditing(false)}>Cancel</button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-              {ticket.churn_risk && (
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'6px 0',borderTop:'1px solid var(--border)'}}>
-                  <span style={{fontSize:12,color:'var(--text-dim)'}}>Churn Risk</span>
-                  <span style={{fontSize:12,fontWeight:700,color:ticket.churn_risk==='critical'?'var(--danger)':ticket.churn_risk==='high'?'var(--orange)':ticket.churn_risk==='medium'?'var(--warning)':'var(--success)'}}>
-                    {ticket.churn_risk.toUpperCase()}
-                  </span>
-                </div>
-              )}
-              {ticket.recommended_tone && (
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'6px 0',borderTop:'1px solid var(--border)'}}>
-                  <span style={{fontSize:12,color:'var(--text-dim)'}}>Recommended Tone</span>
-                  <span style={{fontSize:12,fontWeight:600,color:'var(--primary-light)'}}>{ticket.recommended_tone}</span>
-                </div>
-              )}
-            </div>
-          )}
+            )}
 
-          {/* Outcome */}
-          <div className="card" style={{marginBottom:16}}>
-            <div className="card-title">📊 Outcome</div>
-            <div style={{display:'flex',flexDirection:'column',gap:8}}>
-              {[
-                ['Status', <span className={`badge-status ${ticket.status}`}>{ticket.status}</span>],
-                ['Outcome', ticket.outcome || '—'],
-                ['Resolution', ticket.resolution_action || '—'],
-                ['Classified At', ticket.classified_at ? new Date(ticket.classified_at).toLocaleTimeString() : '—'],
-                ['Terminal At', ticket.terminal_at ? new Date(ticket.terminal_at).toLocaleString() : '—'],
-              ].map(([label, value]: any) => (
-                <div key={label} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'4px 0',borderBottom:'1px solid rgba(45,49,72,0.4)'}}>
-                  <span style={{fontSize:12,color:'var(--text-dim)'}}>{label}</span>
-                  <span style={{fontSize:12,fontWeight:500}}>{value}</span>
+            {/* Final Response */}
+            {ticket.final_response && (
+              <div className="card" style={{ border: '1px solid rgba(16,185,129,.2)' }}>
+                <div className="card-header" style={{ borderColor: 'rgba(16,185,129,.2)' }}>
+                  <div className="card-title" style={{ color: '#34d399' }}>✅ Final Response Sent</div>
+                  <span className="badge resolved">{ticket.outcome}</span>
                 </div>
-              ))}
+                <div className="card-body">
+                  <div style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--text-muted)', whiteSpace: 'pre-wrap' }}>
+                    {ticket.final_response}
+                  </div>
+                  {ticket.delivered_at && (
+                    <div style={{ marginTop: 10, fontSize: 11, color: 'var(--text-dim)' }}>
+                      Delivered: {new Date(ticket.delivered_at).toLocaleString()} via {ticket.delivery_channel}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Timeline */}
+            <div className="card">
+              <div className="card-header"><div className="card-title">⏱ Timeline</div></div>
+              <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {[
+                  { label: 'Received', time: ticket.received_at, icon: '📥' },
+                  { label: 'Classified', time: ticket.classified_at, icon: '🤖' },
+                  { label: 'Resolved', time: ticket.resolved_at, icon: '✅' },
+                  { label: 'Terminal', time: ticket.terminal_at, icon: '🏁' },
+                ].filter(e => e.time).map((e, i, arr) => (
+                  <div key={e.label} style={{ display: 'flex', gap: 12, paddingBottom: i < arr.length - 1 ? 12 : 0, marginBottom: i < arr.length - 1 ? 0 : 0 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{ fontSize: 16 }}>{e.icon}</div>
+                      {i < arr.length - 1 && <div style={{ width: 1, flex: 1, background: 'var(--border)', margin: '4px 0' }}></div>}
+                    </div>
+                    <div style={{ paddingBottom: i < arr.length - 1 ? 12 : 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600 }}>{e.label}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{new Date(e.time!).toLocaleString()}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-
-          {/* Escalation reason */}
-          {ticket.escalation_reason && (
-            <div className="alert alert-warning" style={{fontSize:12}}>
-              <span>⚠️</span>
-              <div><strong>Escalation reason:</strong><br/>{ticket.escalation_reason}</div>
-            </div>
-          )}
         </div>
+
+        {/* Pipeline Visualizer — spans full width below both columns */}
+        <PipelineVisualizer ticketId={ticket.id} status={ticket.status} />
       </div>
     </div>
   );

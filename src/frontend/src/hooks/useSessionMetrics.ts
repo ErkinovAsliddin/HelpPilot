@@ -1,4 +1,3 @@
-// src/frontend/src/hooks/useSessionMetrics.ts
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client.ts';
 
@@ -17,19 +16,14 @@ export interface SessionMetrics {
 
 export function useSessionMetrics() {
   const [metrics, setMetrics] = useState<SessionMetrics | null>(null);
-
   useEffect(() => {
-    let active = true;
-    const fetch = async () => {
-      try {
-        const res = await apiClient.get<SessionMetrics>('/metrics/session');
-        if (active) setMetrics(res.data);
-      } catch { /* ignore */ }
+    const load = async () => {
+      try { const r = await apiClient.get<SessionMetrics>('/metrics/session'); setMetrics(r.data); }
+      catch {}
     };
-    fetch();
-    const id = setInterval(fetch, 5000);
-    return () => { active = false; clearInterval(id); };
+    load();
+    const id = setInterval(load, 8000);
+    return () => clearInterval(id);
   }, []);
-
   return metrics;
 }
