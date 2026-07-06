@@ -17,13 +17,16 @@ import MultilingualDemoPage from './pages/MultilingualDemoPage.tsx';
 import BurndownPage from './pages/BurndownPage.tsx';
 import DocsPage from './pages/DocsPage.tsx';
 import WelcomePage from './pages/WelcomePage.tsx';
+import HiringPage from './pages/HiringPage.tsx';
+import CandidateDetailPage from './pages/CandidateDetailPage.tsx';
+import CalendarPage from './pages/CalendarPage.tsx';
 import OnboardingFlow from './components/OnboardingFlow/OnboardingFlow.tsx';
 import AdminChat from './components/AdminChat/AdminChat.tsx';
 import VoiceControl from './components/VoiceControl/VoiceControl.tsx';
 import SystemHealthBadge from './components/SystemHealthBadge/SystemHealthBadge.tsx';
 import { apiClient } from './api/client.ts';
 
-function Sidebar() {
+function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const loc = useLocation();
   const [counts, setCounts] = useState({ tickets: 0, pending: 0, incidents: 0 });
 
@@ -59,14 +62,19 @@ function Sidebar() {
   );
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-brand">
-        <div className="brand-icon">🤖</div>
-        <div className="brand-text">
-          <div className="name">HelpPilot</div>
-          <div className="tagline">AI Helpdesk Autopilot</div>
+    <>
+      {/* Mobile overlay */}
+      <div className={`sidebar-overlay${open ? ' open' : ''}`} onClick={onClose} />
+      <aside className={`sidebar${open ? ' open' : ''}`}>
+        <div className="sidebar-brand">
+          <div className="brand-icon">🤖</div>
+          <div className="brand-text">
+            <div className="name">HelpPilot</div>
+            <div className="tagline">AI Helpdesk Autopilot</div>
+          </div>
+          {/* Close button on mobile */}
+          <button onClick={onClose} style={{ marginLeft:'auto', background:'none', border:'none', color:'var(--text-dim)', fontSize:20, cursor:'pointer', padding:'4px 6px', display:'flex', alignItems:'center' }}>✕</button>
         </div>
-      </div>
 
       <nav className="sidebar-nav">
         <div className="nav-section">Tickets</div>
@@ -74,6 +82,10 @@ function Sidebar() {
         {link('/tickets', '📋', 'All Tickets', counts.tickets || undefined, 'purple')}
         {link('/submit', '📩', 'Submit Ticket')}
         {link('/approvals', '✅', 'Approvals', counts.pending || undefined, '')}
+
+        <div className="nav-section">HireFlow</div>
+        {link('/hiring', '💼', 'Hiring Pipeline')}
+        {link('/calendar', '📅', 'Calendar')}
 
         <div className="nav-section">Operations</div>
         {link('/summary', '📋', 'Daily Summary')}
@@ -91,8 +103,7 @@ function Sidebar() {
         {link('/docs', '📚', 'Technical Docs')}
       </nav>
 
-      <div className="sidebar-footer">
-        <div className="status-bar">
+      <div className="sidebar-footer">        <div className="status-bar">
           <div className="pulse"></div>
           <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Server · port 3000</span>
           <span className="ai-badge" style={{ marginLeft: 'auto' }}>Qwen</span>
@@ -113,17 +124,27 @@ function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }
 
 function Shell({ children, showOnboarding, onOnboardingComplete }: { children: React.ReactNode; showOnboarding?: boolean; onOnboardingComplete?: () => void }) {
   const loc = useLocation();
   const isLoggedIn = !!sessionStorage.getItem('apiKey');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   if (loc.pathname === '/login' || loc.pathname === '/welcome') return <>{children}</>;
   return (
     <div className="layout">
-      <Sidebar />
-      <main className="main">{children}</main>
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <main className="main">
+        {/* Mobile topbar with hamburger — hidden on desktop via CSS */}
+        <div className="mobile-topbar">
+          <button className="hamburger" onClick={() => setSidebarOpen(true)} aria-label="Open menu">☰</button>
+          <span style={{ fontWeight: 700, fontSize: 15 }}>🤖 HelpPilot</span>
+        </div>
+        {children}
+      </main>
       {isLoggedIn && <VoiceControl />}
       {isLoggedIn && <AdminChat />}
       {isLoggedIn && showOnboarding && <OnboardingFlow onComplete={onOnboardingComplete || (() => {})} />}
@@ -159,6 +180,9 @@ export default function App() {
           <Route path="/health" element={<RequireAuth><HealthPage /></RequireAuth>} />
           <Route path="/architecture" element={<RequireAuth><ArchitecturePage /></RequireAuth>} />
           <Route path="/docs" element={<RequireAuth><DocsPage /></RequireAuth>} />
+          <Route path="/hiring" element={<RequireAuth><HiringPage /></RequireAuth>} />
+          <Route path="/hiring/:id" element={<RequireAuth><CandidateDetailPage /></RequireAuth>} />
+          <Route path="/calendar" element={<RequireAuth><CalendarPage /></RequireAuth>} />
           <Route path="*" element={<Navigate to="/trust-dial" replace />} />
         </Routes>
       </Shell>
