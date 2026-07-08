@@ -1,15 +1,16 @@
 // src/utils/bedrockClient.ts
-// Falls back to deterministic mock when AWS credentials are absent or Bedrock is unreachable.
+// Falls back to deterministic mock when Qwen API key is absent or Qwen is unreachable.
 
 import { logger } from './logger.js';
 
-const MOCK_MODE =
-  !process.env.AWS_REGION ||
-  !process.env.AWS_ACCESS_KEY_ID ||
-  process.env.MOCK_MODE === 'true';
+const QWEN_API_KEY = process.env.QWEN_API_KEY;
+const QWEN_MODEL = process.env.QWEN_MODEL || 'qwen-plus';
+const QWEN_BASE_URL = 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1';
+
+const MOCK_MODE = process.env.MOCK_MODE === 'true';
 
 if (MOCK_MODE) {
-  logger.info('[BedrockClient] Running in MOCK mode — no AWS credentials required.');
+  logger.info('[QwenClient] Running in MOCK mode — no Qwen API key found.');
 }
 
 export interface BedrockTextResult {
@@ -24,7 +25,7 @@ export interface BedrockEmbeddingResult {
   mock: boolean;
 }
 
-/** Invoke Claude 3.5 Sonnet (or mock) with a system + user prompt */
+/** Invoke Qwen (or mock) with a system + user prompt */
 export async function invokeText(
   systemPrompt: string,
   userPrompt: string
@@ -33,54 +34,61 @@ export async function invokeText(
     return mockText(systemPrompt, userPrompt);
   }
   try {
-    const { BedrockRuntimeClient, InvokeModelCommand } = await import(
-      '@aws-sdk/client-bedrock-runtime'
-    );
-    const client = new BedrockRuntimeClient({ region: process.env.AWS_REGION });
-    const body = JSON.stringify({
-      anthropic_version: 'bedrock-2023-05-31',
-      max_tokens: 2048,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
+    const response = await fetch(`${QWEN_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${QWEN_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: QWEN_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        max_tokens: 2048,
+      }),
     });
-    const cmd = new InvokeModelCommand({
-      modelId: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
-      contentType: 'application/json',
-      accept: 'application/json',
-      body,
-    });
-    const response = await client.send(cmd);
-    const parsed = JSON.parse(Buffer.from(response.body).toString());
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Qwen API ${response.status}: ${errText}`);
+    }
+    const parsed = await response.json();
     return {
-      text: parsed.content[0].text as string,
-      inputTokens: parsed.usage?.input_tokens ?? 0,
-      outputTokens: parsed.usage?.output_tokens ?? 0,
+      text: parsed.choices[0].message.content as string,
+      inputTokens: parsed.usage?.prompt_tokens ?? 0,
+      outputTokens: parsed.usage?.completion_tokens ?? 0,
       mock: false,
     };
   } catch (err) {
-    logger.warn('[BedrockClient] Live call failed, falling back to mock', err);
+    logger.warn('[QwenClient] Live call failed, falling back to mock', err);
     return mockText(systemPrompt, userPrompt);
   }
 }
 
-/** Generate embedding vector via Titan (or mock) */
+/** Generate embedding vector via Qwen text-embedding model (or mock) */
 export async function invokeEmbedding(text: string): Promise<BedrockEmbeddingResult> {
   if (MOCK_MODE) return mockEmbedding(text);
   try {
-    const { BedrockRuntimeClient, InvokeModelCommand } = await import(
-      '@aws-sdk/client-bedrock-runtime'
-    );
-    const client = new BedrockRuntimeClient({ region: process.env.AWS_REGION });
-    const cmd = new InvokeModelCommand({
-      modelId: 'amazon.titan-embed-text-v2:0',
-      contentType: 'application/json',
-      accept: 'application/json',
-      body: JSON.stringify({ inputText: text.slice(0, 8000) }),
+    const response = await fetch(`${QWEN_BASE_URL}/embeddings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${QWEN_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'text-embedding-v3',
+        input: text.slice(0, 8000),
+      }),
     });
-    const response = await client.send(cmd);
-    const parsed = JSON.parse(Buffer.from(response.body).toString());
-    return { embedding: parsed.embedding as number[], mock: false };
-  } catch {
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Qwen embeddings API ${response.status}: ${errText}`);
+    }
+    const parsed = await response.json();
+    return { embedding: parsed.data[0].embedding as number[], mock: false };
+  } catch (err) {
+    logger.warn('[QwenClient] Embedding call failed, falling back to mock', err);
     return mockEmbedding(text);
   }
 }
@@ -97,7 +105,6 @@ function mockText(system: string, user: string): BedrockTextResult {
   const seed = deterministicSeed(system.slice(0, 40) + user.slice(0, 40));
   const lower = user.toLowerCase();
 
-  // Classification mock
   if (system.includes('classify')) {
     const cats = ['password-reset', 'network-issue', 'software-install', 'hardware-failure', 'billing', 'other'];
     const pris = ['low', 'medium', 'high', 'critical'];
@@ -114,7 +121,6 @@ function mockText(system: string, user: string): BedrockTextResult {
     };
   }
 
-  // Emotion mock
   if (system.includes('emotion') || system.includes('sentiment')) {
     let state = 'calm'; let churn = 'low'; let frust = 2; let urg = 2;
     if (lower.includes('cancel') || lower.includes('lawsuit') || lower.includes('angry')) {
@@ -130,7 +136,6 @@ function mockText(system: string, user: string): BedrockTextResult {
     };
   }
 
-  // Draft response mock
   if (system.includes('draft') || system.includes('response') || system.includes('resolve')) {
     const drafts: Record<string, string> = {
       'password-reset': 'Dear User,\n\nThank you for reaching out. To reset your password:\n\n1. Press Ctrl+Alt+Del → Change a password\n2. Or visit https://password.helppilot.com for self-service reset\n3. If on remote: connect to VPN first\n\nBest regards,\nHelpPilot Support',
@@ -169,4 +174,20 @@ function mockEmbedding(text: string): BedrockEmbeddingResult {
   });
   const mag = Math.sqrt(embedding.reduce((s, v) => s + v * v, 0));
   return { embedding: embedding.map(v => v / mag), mock: true };
+}
+
+/** Simplified embedding call — returns just the vector, for KB/Chroma use */
+export async function embedText(text: string): Promise<number[]> {
+  const result = await invokeEmbedding(text);
+  return result.embedding;
+}
+
+/** Generic low-level invoke — kept for compatibility with OCR/vision callers.
+ *  Qwen vision calls would need a different shape; falls back to mock for now. */
+export async function invokeModel(modelId: string, body: Record<string, unknown>): Promise<unknown> {
+  if (MOCK_MODE) {
+    return { content: [{ type: 'text', text: '[mock OCR/model output]' }] };
+  }
+  logger.warn('[QwenClient] invokeModel (vision/OCR) not yet implemented for Qwen — returning mock output');
+  return { content: [{ type: 'text', text: '[mock OCR/model output]' }] };
 }

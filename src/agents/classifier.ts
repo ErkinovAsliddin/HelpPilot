@@ -46,11 +46,11 @@ export async function classifyTicket(subject: string, body: string): Promise<Cla
   try {
     const json = extractJson(result.text);
     return {
-      category: json.category ?? 'other',
-      priority: json.priority ?? 'low',
-      detected_language: json.detected_language ?? 'en',
-      translated_subject: json.translated_subject ?? null,
-      translated_body: json.translated_body ?? null,
+      category: (json.category as TicketCategory) ?? 'other',
+      priority: (json.priority as Priority) ?? 'low',
+      detected_language: (json.detected_language as string) ?? 'en',
+      translated_subject: (json.translated_subject as string | null) ?? null,
+      translated_body: (json.translated_body as string | null) ?? null,
       mock: result.mock,
     };
   } catch (err) {
@@ -63,4 +63,38 @@ function extractJson(text: string): Record<string, unknown> {
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('No JSON found');
   return JSON.parse(match[0]);
+}
+
+// ── Class wrapper for PipelineOrchestrator ──────────────────────────────────
+export interface ClassifierAgentInput {
+  ticketId: string;
+  subject: string;
+  body: string;
+}
+
+export interface ClassifierAgentOutput {
+  category: TicketCategory;
+  priority: Priority;
+  sentiment: 'neutral' | 'positive' | 'negative';
+  suggestedAgent: 'auto' | 'human-review';
+  detectedLanguage: string;
+  translatedSubject: string | null;
+  translatedBody: string | null;
+}
+
+export class ClassifierAgent {
+  async run(input: ClassifierAgentInput): Promise<ClassifierAgentOutput> {
+    const result = await classifyTicket(input.subject, input.body);
+    const suggestedAgent: 'auto' | 'human-review' =
+      result.priority === 'critical' ? 'human-review' : 'auto';
+    return {
+      category: result.category,
+      priority: result.priority,
+      sentiment: 'neutral',
+      suggestedAgent,
+      detectedLanguage: result.detected_language,
+      translatedSubject: result.translated_subject,
+      translatedBody: result.translated_body,
+    };
+  }
 }

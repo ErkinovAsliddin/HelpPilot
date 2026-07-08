@@ -31,6 +31,14 @@ export type Ticket = {
   recommended_tone?: string;
   kb_results?: string;
   escalation_reason?: string;
+  translated_body?: string;
+  detected_language?: string;
+  vip_flag?: boolean;
+  emotion_reasoning?: string;
+  delivered_at?: string;
+  delivery_channel?: string;
+  classified_at?: string;
+  resolved_at?: string;
 };
 
 export type Incident = {

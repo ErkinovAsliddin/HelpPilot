@@ -21,3 +21,14 @@ export const logger = {
   warn:  (msg: string, meta?: unknown) => emit('warn',  msg, meta),
   error: (msg: string, meta?: unknown) => emit('error', msg, meta),
 };
+
+export interface LogEntry {
+  level: LogLevel;
+  message: string;
+  [key: string]: unknown;
+}
+
+export function log(entry: LogEntry): void {
+  const { level, message, ...meta } = entry;
+  emit(level, message, Object.keys(meta).length ? meta : undefined);
+}

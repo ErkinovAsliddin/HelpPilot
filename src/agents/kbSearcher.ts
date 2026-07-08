@@ -2,6 +2,7 @@
 // Knowledge-base semantic search. Falls back to in-memory KB when ChromaDB is unavailable.
 import { invokeEmbedding } from '../utils/bedrockClient.js';
 import { logger } from '../utils/logger.js';
+import type { Ticket, KBSearchOutput } from '../types/ticket.js';
 
 export interface KBResult {
   id: string;
@@ -101,4 +102,25 @@ export async function searchKB(
   }));
 
   return { results, status: 'mock' };
+}
+
+// ── Class wrapper for PipelineOrchestrator ──────────────────────────────────
+export class KBSearcherAgent {
+  async run(ticket: Ticket): Promise<KBSearchOutput> {
+    const query = ticket.translated_body || ticket.body || ticket.subject || '';
+    const { results, status } = await searchKB(query, ticket.category || 'other');
+
+    const mappedResults = results.map((r) => ({
+      type: 'kb_article' as const,
+      title: r.title,
+      summary: r.summary,
+      similarityScore: r.similarity,
+      entryId: r.id,
+    }));
+
+    const kbStatus: KBSearchOutput['kbStatus'] =
+      results.length === 0 ? 'no_results' : 'ok';
+
+    return { results: mappedResults, kbStatus: status === 'mock' && results.length === 0 ? 'kb_unavailable' : kbStatus };
+  }
 }

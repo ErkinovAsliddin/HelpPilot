@@ -75,7 +75,7 @@ export default function TrustDialPage() {
                 stats={stats}
                 isGlobal={isGlobal}
                 saving={saving === cat}
-                onUpdate={(mode, threshold) => update(cat, mode, threshold)}
+                onUpdate={(mode: string, threshold: number) => update(cat, mode, threshold)}
               />
             );
           })}

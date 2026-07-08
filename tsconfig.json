@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "noEmitOnError": false,
+    "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
     "module": "NodeNext",

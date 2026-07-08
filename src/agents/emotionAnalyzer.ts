@@ -45,14 +45,14 @@ export async function analyzeEmotion(subject: string, body: string): Promise<Emo
 
   try {
     const json = extractJson(result.text);
-    const churnRisk: ChurnRisk = json.churn_risk ?? 'low';
-    const emotionalState: EmotionalState = json.emotional_state ?? 'calm';
+    const churnRisk: ChurnRisk = (json.churn_risk as ChurnRisk) ?? 'low';
+    const emotionalState: EmotionalState = (json.emotional_state as EmotionalState) ?? 'calm';
     return {
       emotional_state: emotionalState,
       churn_risk: churnRisk,
       frustration_score: clamp(Number(json.frustration_score ?? 2), 1, 10),
       urgency_score: clamp(Number(json.urgency_score ?? 2), 1, 10),
-      recommended_tone: json.recommended_tone ?? 'professional',
+      recommended_tone: (json.recommended_tone as ResponseTone) ?? 'professional',
       trigger_words: Array.isArray(json.trigger_words) ? json.trigger_words : [],
       reasoning: String(json.reasoning ?? ''),
       bypass_queue: churnRisk === 'critical' || emotionalState === 'desperate',
@@ -77,4 +77,23 @@ function extractJson(text: string): Record<string, unknown> {
 
 function clamp(v: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, isNaN(v) ? min : v));
+}
+
+// ── Class wrapper for PipelineOrchestrator ──────────────────────────────────
+export interface EmotionAnalyzerAgentInput {
+  ticketId: string;
+  subject: string;
+  body: string;
+  submitterEmail?: string;
+}
+
+export interface EmotionAnalyzerAgentOutput extends EmotionResult {
+  vip_flag: boolean;
+}
+
+export class EmotionAnalyzerAgent {
+  async run(input: EmotionAnalyzerAgentInput): Promise<EmotionAnalyzerAgentOutput> {
+    const result = await analyzeEmotion(input.subject, input.body);
+    return { ...result, vip_flag: false };
+  }
 }

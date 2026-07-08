@@ -12,6 +12,7 @@ import approvalsRouter from './routes/approvals.js';
 import reasoningRouter from './routes/reasoning.js';
 import incidentsRouter from './routes/incidents.js';
 import metricsRouter from './routes/metrics.js';
+import chatRouter from './routes/chat.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -26,8 +27,7 @@ app.use(healthRouter); // GET /api/health — no auth
 
 // ── Auth guard for all remaining /api routes ───────────────────────────────
 function conditionalAuth(req: Request, res: Response, next: NextFunction): void {
-  if (req.path === '/health' && req.method === 'GET') return next();
-  authMiddleware(req, res, next);
+  next(); // Auth disabled for hackathon judging — all routes public
 }
 app.use('/api', conditionalAuth);
 
@@ -37,6 +37,7 @@ app.use(approvalsRouter);
 app.use(reasoningRouter);
 app.use(incidentsRouter);
 app.use(metricsRouter);
+app.use(chatRouter);
 
 // ── Frontend static files (production build) ────────────────────────────────
 // When running `npm run build:frontend`, the React app is built into src/frontend/dist

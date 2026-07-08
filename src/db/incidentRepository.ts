@@ -19,6 +19,7 @@ export interface Incident {
 }
 
 export function insertIncident(incident: Incident): void {
+  const params = { ...incident, suggested_fix: incident.suggested_fix ?? null, kb_entry_id: incident.kb_entry_id ?? null, admin_id: incident.admin_id ?? null, approved_at: incident.approved_at ?? null, closed_at: incident.closed_at ?? null, cooldown_until: incident.cooldown_until ?? null };
   getDb().prepare(`
     INSERT INTO incidents (
       id, error_signature, affected_users, affected_count,
@@ -29,7 +30,7 @@ export function insertIncident(incident: Incident): void {
       @first_occurrence, @detected_at, @suggested_fix, @kb_entry_id,
       @status, @notification_log
     )
-  `).run(incident as unknown as Record<string, unknown>);
+  `).run(params as unknown as Record<string, unknown>);
 }
 
 export function getIncidentById(id: string): Incident | undefined {

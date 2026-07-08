@@ -30,7 +30,8 @@ export async function queryCollection(
   return withRetry(async () => {
     let collection;
     try {
-      collection = await getClient().getCollection({ name: collectionName });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      collection = await getClient().getCollection({ name: collectionName } as any);
     } catch (err) {
       throw new KBUnavailableError(`ChromaDB unavailable: ${String(err)}`);
     }

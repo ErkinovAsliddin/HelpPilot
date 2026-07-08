@@ -3,7 +3,6 @@
 
 import { getDb } from '../db/schema.js';
 import { log } from '../utils/logger.js';
-import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 import { ChromaClient } from 'chromadb';
 
 type ServiceStatus = 'healthy' | 'degraded' | 'unavailable';
@@ -17,16 +16,23 @@ export function isAutoResolutionEnabled(): boolean {
 }
 
 async function checkBedrock(): Promise<ServiceStatus> {
+  const apiKey = process.env.QWEN_API_KEY;
+  if (!apiKey) return 'unavailable';
+
   try {
-    const region = process.env.AWS_REGION || 'us-east-1';
-    const client = new BedrockRuntimeClient({ region });
-    const cmd = new InvokeModelCommand({
-      modelId: 'amazon.titan-embed-text-v1',
-      contentType: 'application/json',
-      accept: 'application/json',
-      body: JSON.stringify({ inputText: 'health check' }),
+    const response = await fetch('https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.QWEN_MODEL || 'qwen-plus',
+        messages: [{ role: 'user', content: 'health check' }],
+        max_tokens: 5,
+      }),
     });
-    await client.send(cmd);
+    if (!response.ok) throw new Error(`Qwen health check failed: ${response.status}`);
 
     // Recovery
     if (!_autoResolutionEnabled) {

@@ -68,7 +68,7 @@ export default function ConfidenceTooltip({ score, explanation }: Props) {
             </div>
           ))}
           {/* Arrow */}
-          <div style={{ position: 'absolute', bottom: -6, left: '50%', transform: 'translateX(-50%)', width: 10, height: 10, background: '#1a2035', border: '1px solid rgba(99,102,241,0.4)', borderTop: 'none', borderLeft: 'none', transform: 'translateX(-50%) rotate(45deg)' }}></div>
+          <div style={{ position: 'absolute', bottom: -6, left: '50%', width: 10, height: 10, background: '#1a2035', border: '1px solid rgba(99,102,241,0.4)', borderTop: 'none', borderLeft: 'none', transform: 'translateX(-50%) rotate(45deg)' }}></div>
         </div>
       )}
     </div>
