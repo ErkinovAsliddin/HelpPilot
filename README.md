@@ -1,207 +1,242 @@
-# HelpPilot — IT Helpdesk Autopilot
+<a name="readme-top"></a>
 
-HelpPilot is a production-ready Smart IT Helpdesk Autopilot that automatically classifies, prioritizes, searches a knowledge base, and either auto-resolves or drafts responses for human approval.
+<div align="center">
 
----
+<img src="https://img.shields.io/badge/🚁-HelpPilot-6366f1?style=for-the-badge&labelColor=1a1a2e" height="60" alt="HelpPilot"/>
 
-## Architecture
+# HelpPilot
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                       Ingestion Layer                           │
-│   REST API (POST /api/tickets)  │  Email (IMAP)  │  Web Form   │
-│                  MultiModalHandler (OCR / Whisper / Thread)     │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │ EventBus: ticket.received
-┌──────────────────────────────▼──────────────────────────────────┐
-│                    Orchestration Pipeline                       │
-│  ClassifierAgent → EmotionAnalyzerAgent → KBSearcherAgent →    │
-│  ResolverAgent → [auto_resolve | pending_approval | escalate]  │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────────┐
-│              HITL Approval Layer (Admin Dashboard)              │
-│  Approve / Edit-Approve / Reject → DeliveryService             │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────────┐
-│  LoggerAgent → SQLite terminal state + ChromaDB KB feedback     │
-└─────────────────────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────────────────────┐
-│  PredictionEngine (background) → Incident detection + dispatch  │
-└─────────────────────────────────────────────────────────────────┘
-```
+### The IT Helpdesk That Runs Itself — Safely
+
+*A multi-agent autopilot that classifies, understands, searches, and resolves IT tickets — with a human always one click away from the wheel.*
+
+<br/>
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](./LICENSE)
+[![Powered by Qwen Cloud](https://img.shields.io/badge/Powered%20by-Qwen%20Cloud-6366f1?style=flat-square)](https://www.qwencloud.com/)
+[![Deployed on Alibaba Cloud](https://img.shields.io/badge/Deployed%20on-Alibaba%20Cloud-FF6A00?style=flat-square&logo=alibabacloud&logoColor=white)](https://www.alibabacloud.com/)
+[![Docker](https://img.shields.io/badge/Container-Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
+
+**[🌐 Live Demo](https://helppilot.run.place)** &nbsp;·&nbsp; **[📹 Demo Video](#)** &nbsp;·&nbsp; **[🐛 Report Bug](https://github.com/ErkinovAsliddin/HelpPilot/issues)** &nbsp;·&nbsp; **[✨ Request Feature](https://github.com/ErkinovAsliddin/HelpPilot/issues)**
+
+<sub>Built solo for the **Qwen Cloud Global AI Hackathon** — Track 4: Autopilot Agent 🏆</sub>
+
+</div>
+
+<br/>
 
 ---
 
-## Quick Start
+## 📋 Table of Contents
+
+- [The Problem](#-the-problem)
+- [The Solution](#-the-solution)
+- [Features](#-features)
+- [How It Works](#-how-it-works)
+- [Tech Stack](#-tech-stack)
+- [Alibaba Cloud Deployment](#️-alibaba-cloud--qwen-cloud-deployment)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [Demo Walkthrough](#-demo-walkthrough)
+- [Roadmap](#-roadmap)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## 😤 The Problem
+
+Every IT helpdesk drowns in the same flood: forgotten passwords, VPN timeouts, printer offline reports — buried in the *same queue* as a critical AD replication failure or a swollen laptop battery that's a genuine safety hazard. Human agents burn hours triaging noise instead of solving problems, and by the time someone notices five people reported the same VPN error, it's already an incident.
+
+## 💡 The Solution
+
+**HelpPilot** reads every ticket the moment it lands — classifies it, reads the *emotion* behind it, searches a live knowledge base, and drafts (or autonomously executes) a resolution. It correlates related tickets into incidents before they snowball, and it lets admins dial in *exactly* how much autonomy the system earns, one category at a time. Nothing happens in a black box — every decision leaves a full, inspectable reasoning trail.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🧠 Multi-Agent Reasoning Pipeline
+Four specialized agents — `ClassifierAgent`, `EmotionAnalyzerAgent`, `KBSearcherAgent`, `ResolverAgent` — each hand off a structured output, and each step is logged with inputs, outputs, and timing for full transparency.
+
+### 🎚️ Trust Dial
+Set **independent autonomy thresholds per ticket category**. Auto-resolve password resets instantly. Always escalate hardware failures. Your rules, per category, no all-or-nothing switch.
+
+### 🔁 Verified Auto-Remediation Loop
+HelpPilot scores its own confidence before acting. Low-confidence drafts route to a human automatically — it never guesses its way into production.
+
+</td>
+<td width="50%" valign="top">
+
+### 🚨 Predictive Incident Detection
+A background `PredictionEngine` correlates ticket patterns in real time — five VPN failures in ten minutes becomes **one incident**, not five duplicate tickets.
+
+### 🎙️ Voice Command Control
+A fully voice-driven admin mode. Native browser speech recognition + Qwen Cloud NLU for free-form commands: *"How many tickets are pending?"* — HelpPilot answers, out loud.
+
+### 👀 Human-in-the-Loop Dashboard
+Every autonomous action is inspectable and reversible before it ships — see exactly what each agent saw and decided.
+
+</td>
+</tr>
+</table>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## ⚙️ How It Works
+
+```mermaid
+flowchart LR
+    A[📩 Incoming Ticket] --> B[ClassifierAgent<br/>category + priority]
+    B --> C[EmotionAnalyzerAgent<br/>frustration + churn risk]
+    C --> D[KBSearcherAgent<br/>ChromaDB vector search]
+    D --> E[ResolverAgent<br/>drafts resolution]
+    E --> F{Confidence ≥<br/>Trust Dial threshold?}
+    F -->|Yes| G[✅ Auto-Resolve]
+    F -->|No| H[🙋 Human Approval Queue]
+    H --> I[HITL Dashboard]
+```
+
+Meanwhile, a parallel `PredictionEngine` watches ticket velocity per error signature — spotting incidents before they flood the queue.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|:--|:--|
+| 🤖 LLM Inference | **Qwen Cloud** (`qwen-plus`) via OpenAI-compatible API |
+| 🖥️ Backend | Node.js · Express · TypeScript |
+| 🗃️ Ticket State | SQLite |
+| 🔎 Knowledge Base | ChromaDB (vector search) |
+| 🎨 Frontend | React · TypeScript · real-time dashboard |
+| 🎙️ Voice | Web Speech API + Qwen Cloud NLU fallback |
+| 📦 Deployment | Docker container on **Alibaba Cloud ECS** |
+| 🔒 Reverse Proxy / SSL | Nginx + Let's Encrypt |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## ☁️ Alibaba Cloud + Qwen Cloud Deployment
+
+HelpPilot's backend is fully containerized and running live on **Alibaba Cloud ECS**, calling **Qwen Cloud's** OpenAI-compatible API for every LLM inference call:
+
+```
+API Base URL: https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+Model: qwen-plus
+```
+
+**Proof of integration:**
+- [`src/utils/bedrockClient.ts`](./src/utils/bedrockClient.ts) — Qwen Cloud chat completions + embeddings client
+- [`Dockerfile`](./Dockerfile) — production container build
+- Live at **[helppilot.run.place](https://helppilot.run.place)**, served from Alibaba Cloud ECS via Nginx + Let's Encrypt SSL
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js 20+
-- Docker (for ChromaDB)
-- AWS credentials with Bedrock access
+- Docker
+- A free [Qwen Cloud](https://www.qwencloud.com/) API key
 
-### 1. Start ChromaDB
-
-```bash
-docker run -p 8000:8000 chromadb/chroma
-```
-
-### 2. Configure environment
+### Installation
 
 ```bash
+# 1. Clone the repo
+git clone https://github.com/ErkinovAsliddin/HelpPilot.git
+cd HelpPilot
+
+# 2. Configure environment
 cp .env.example .env
-# Edit .env with your values
+# → add your QWEN_API_KEY to .env
+
+# 3. Build & run
+docker build -t helppilot-app .
+docker run -d --name helppilot-app-1 -p 3000:3000 --env-file .env helppilot-app
 ```
 
-Required variables:
-| Variable | Description |
-|---|---|
-| `HELPPILOT_API_KEYS` | Comma-separated API keys |
-| `AWS_REGION` | AWS region (e.g. `us-east-1`) |
-| `BEDROCK_MODEL_ID` | Claude model ID |
-| `CHROMA_URL` | ChromaDB URL (default: `http://localhost:8000`) |
-| `BRAVE_API_KEY` | Brave Search API key (optional) |
-| `SMTP_HOST` | SMTP server host |
-| `SMTP_USER` | SMTP username |
-| `SMTP_PASS` | SMTP password |
-| `SMTP_FROM` | From address |
-| `ADMIN_EMAIL` | Admin notification email |
-| `SLACK_WEBHOOK_URL` | Slack webhook for notifications |
+Open **`http://localhost:3000`** — you're live. 🎉
 
-### 3. Install dependencies
-
-```bash
-npm install
-```
-
-### 4. Run in development
-
-```bash
-npm run dev
-```
-
-### 5. Run tests
-
-```bash
-npm test
-```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## API Reference
+## 🔧 Environment Variables
 
-### Authentication
+| Variable | Required | Description |
+|:--|:--:|:--|
+| `QWEN_API_KEY` | ✅ | Your Qwen Cloud API key |
+| `QWEN_MODEL` | – | Model name (default: `qwen-plus`) |
+| `MOCK_MODE` | – | Set `true` to run fully offline with deterministic mock responses |
 
-All `/api/*` endpoints (except `GET /api/health`) require an `X-API-Key` header.
-
-### Endpoints
-
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/tickets` | Create a ticket (JSON, form, or multipart) |
-| `GET` | `/api/tickets` | List tickets (filter by status, category, priority) |
-| `GET` | `/api/tickets/:id` | Get ticket details |
-| `POST` | `/api/approvals` | Submit approval action |
-| `GET` | `/api/tickets/:id/reasoning` | Get reasoning trace (SSE for in-progress) |
-| `GET` | `/api/incidents` | List incidents |
-| `POST` | `/api/incidents/:id/approve` | Approve incident notification |
-| `POST` | `/api/incidents/:id/close` | Close incident |
-| `GET` | `/api/metrics/session` | Get session metrics |
-| `GET` | `/api/health` | System health check |
-
-### Create Ticket
-
-```bash
-curl -X POST http://localhost:3000/api/tickets \
-  -H "X-API-Key: your-key" \
-  -H "Content-Type: application/json" \
-  -d '{"subject": "Cannot login", "body": "I forgot my password."}'
-```
-
-Response:
-```json
-{ "ticketId": "uuid-v4", "status": "received", "receivedAt": "ISO-8601" }
-```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## HITL Approval Workflow
+## 🎬 Demo Walkthrough
 
-1. Tickets with `confidence_score` 60–85 or `priority=critical` are flagged `pending-approval`
-2. Admin is notified via Slack or email within 30s
-3. Admin can **Approve**, **Edit & Approve**, or **Reject** via dashboard or API
-4. `POST /api/approvals` with `{ ticketId, action, adminId, editedResponse? }`
-5. First action wins — concurrent actions return HTTP 409
+1. **Submit a ticket** — plain text, pasted email thread, or an image attachment
+2. Watch the **reasoning trace** populate live, agent by agent
+3. See the **Trust Dial** decide: auto-resolve, or escalate to a human
+4. Approve or override from the **HITL dashboard**
+5. Try a **voice command**: *"How many pending tickets?"* or *"Approve the first ticket"*
 
----
-
-## Running the Demo
-
-```bash
-# Make sure server is running first
-npm run dev
-
-# In another terminal
-npm run demo
-```
-
-The demo submits 10 tickets covering: password reset, critical network issue, French-language ticket, vague escalation, billing, angry user (emotion engine), Spanish + screenshot (multilingual + OCR), forwarded email thread, VIP account, and trigger word detection.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## New Features (v2)
+## 🗺️ Roadmap
 
-### Emotion-Aware Escalation
-- `EmotionAnalyzerAgent` detects frustration, urgency, churn risk
-- High/critical churn auto-escalates to `pending_approval`
-- Trigger words (`cancel`, `quit`, `manager`, `lawsuit`) alert team lead
+- [ ] Multi-language ticket support beyond English/Spanish
+- [ ] Slack / Teams integration for ticket submission
+- [ ] Configurable SLA-based escalation timers
+- [ ] Public API for third-party ticket sources
 
-### MultiModal Input
-- Image attachments: OCR via Bedrock vision (JPEG/PNG/GIF, max 10MB)
-- Audio attachments: Transcription via Whisper or AWS Transcribe (MP3/WAV/M4A, max 25MB)
-- Forwarded email threads: Auto-extracts latest message
+See [open issues](https://github.com/ErkinovAsliddin/HelpPilot/issues) for the full list of proposed features.
 
-### Proactive Prediction Engine
-- Monitors error event stream for patterns
-- Creates incidents when 5+ users hit same error within 5 minutes
-- Admin approves before notifications are dispatched
-
-### Explainable Reasoning Dashboard
-- Every ticket has a reasoning trace showing each agent's inputs/outputs
-- SSE endpoint for live streaming during processing
-- Trace persisted to SQLite for completed tickets
-
-### Self-Learning Memory Loop
-- Successful resolutions are added to ChromaDB KB automatically
-- `success_count` / `failure_count` tracked per KB entry
-- `kb_confidence_multiplier` adjusts similarity ranking over time
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## Test Coverage
+## 📄 License
 
-```bash
-npm run test:run -- --coverage
-```
+Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 
-Property-based tests (18 properties) cover:
-- Ticket validation (Property 1)
-- Classifier output schema (Property 2)
-- Language detection (Property 3)
-- Routing determinism (Property 4)
-- Draft sanitization (Property 5)
-- KB result ordering (Property 6)
-- HITL log fields (Property 7)
-- Terminal state records (Property 8)
-- KB round-trip (Property 9)
-- Structured log fields (Property 10)
-- Metrics computation (Property 11)
-- API authentication (Property 12)
-- EmotionAnalyzer output (Property 13)
-- KB confidence multiplier (Property 14)
-- Emotion routing override (Property 15)
-- Session metrics zero-state (Property 16)
-- MultiModal normalization (Property 17)
-- Incident detection threshold (Property 18)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## 🙏 Acknowledgments
+
+- [Qwen Cloud](https://www.qwencloud.com/) & [Alibaba Cloud](https://www.alibabacloud.com/) for the hackathon infrastructure and credits
+- [ChromaDB](https://www.trychroma.com/) for vector search
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) for structural inspiration
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+<div align="center">
+
+**Built with ⚡ by [Erkinov Asliddin](https://github.com/ErkinovAsliddin)**
+
+</div>
