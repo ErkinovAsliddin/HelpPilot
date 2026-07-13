@@ -13,7 +13,7 @@ import reasoningRouter from './routes/reasoning.js';
 import incidentsRouter from './routes/incidents.js';
 import metricsRouter from './routes/metrics.js';
 import chatRouter from './routes/chat.js';
-
+import voiceRouter from './routes/voice.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const app = express();
@@ -38,7 +38,7 @@ app.use(reasoningRouter);
 app.use(incidentsRouter);
 app.use(metricsRouter);
 app.use(chatRouter);
-
+app.use(voiceRouter);
 // ── Frontend static files (production build) ────────────────────────────────
 // When running `npm run build:frontend`, the React app is built into src/frontend/dist
 const frontendDist = path.join(__dirname, '../src/frontend/dist');

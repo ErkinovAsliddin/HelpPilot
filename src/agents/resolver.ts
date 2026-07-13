@@ -1,7 +1,7 @@
 // src/agents/resolver.ts
 // Feature: helppilot
 
-import { invokeModel } from '../utils/bedrockClient.js';
+import { invokeModel } from '../utils/qwenClient.js';
 import { determineAction } from './resolverRouter.js';
 import { sanitizeDraft } from '../utils/draftSanitizer.js';
 import { log } from '../utils/logger.js';

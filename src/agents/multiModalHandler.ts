@@ -1,7 +1,7 @@
 // src/agents/multiModalHandler.ts
 // Feature: helppilot
 
-import { invokeModel } from '../utils/bedrockClient.js';
+import { invokeModel } from '../utils/qwenClient.js';
 import { isEmailThread, extractLatestMessage } from '../utils/emailThreadParser.js';
 import { log } from '../utils/logger.js';
 import { bus } from '../pipeline/eventBus.js';

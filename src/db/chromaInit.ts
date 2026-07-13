@@ -3,7 +3,7 @@
 
 import { ChromaClient } from 'chromadb';
 import { ALL_KB_ARTICLES } from './kbSeed.js';
-import { embedText } from '../utils/bedrockClient.js';
+import { embedText } from '../utils/qwenClient.js';
 import { log } from '../utils/logger.js';
 
 const COLLECTION_NAME = 'helppilot_kb';

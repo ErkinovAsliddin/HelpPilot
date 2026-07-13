@@ -6,7 +6,7 @@ import { log } from '../utils/logger.js';
 import { withRetry } from '../utils/retry.js';
 import type { Ticket } from '../types/ticket.js';
 import { ChromaClient } from 'chromadb';
-import { embedText } from '../utils/bedrockClient.js';
+import { embedText } from '../utils/qwenClient.js';
 
 const COLLECTION_NAME = 'helppilot_kb';
 

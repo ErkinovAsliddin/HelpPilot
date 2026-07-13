@@ -8,14 +8,14 @@ import { ChromaClient } from 'chromadb';
 type ServiceStatus = 'healthy' | 'degraded' | 'unavailable';
 
 let _autoResolutionEnabled = true;
-let _bedrockUnavailableSince: Date | null = null;
-let _bedrockAlertEmitted = false;
+let _qwenUnavailableSince: Date | null = null;
+let _qwenAlertEmitted = false;
 
 export function isAutoResolutionEnabled(): boolean {
   return _autoResolutionEnabled;
 }
 
-async function checkBedrock(): Promise<ServiceStatus> {
+async function checkQwen(): Promise<ServiceStatus> {
   const apiKey = process.env.QWEN_API_KEY;
   if (!apiKey) return 'unavailable';
 
@@ -37,20 +37,20 @@ async function checkBedrock(): Promise<ServiceStatus> {
     // Recovery
     if (!_autoResolutionEnabled) {
       _autoResolutionEnabled = true;
-      _bedrockUnavailableSince = null;
-      _bedrockAlertEmitted = false;
-      log({ level: 'info', eventType: 'health.bedrock.recovered', message: 'Bedrock recovered — auto-resolution re-enabled' });
+      _qwenUnavailableSince = null;
+      _qwenAlertEmitted = false;
+      log({ level: 'info', eventType: 'health.qwen.recovered', message: 'Qwen recovered — auto-resolution re-enabled' });
     }
     return 'healthy';
   } catch {
     const now = new Date();
-    if (!_bedrockUnavailableSince) _bedrockUnavailableSince = now;
+    if (!_qwenUnavailableSince) _qwenUnavailableSince = now;
 
-    const unavailableMs = now.getTime() - _bedrockUnavailableSince.getTime();
-    if (unavailableMs >= 60000 && !_bedrockAlertEmitted) {
+    const unavailableMs = now.getTime() - _qwenUnavailableSince.getTime();
+    if (unavailableMs >= 60000 && !_qwenAlertEmitted) {
       _autoResolutionEnabled = false;
-      _bedrockAlertEmitted = true;
-      log({ level: 'error', eventType: 'health.bedrock.unavailable', message: 'Bedrock unavailable ≥60s — auto-resolution DISABLED' });
+      _qwenAlertEmitted = true;
+      log({ level: 'error', eventType: 'health.qwen.unavailable', message: 'Qwen unavailable ≥60s — auto-resolution DISABLED' });
     }
     return 'unavailable';
   }
@@ -86,7 +86,7 @@ async function checkEmail(): Promise<ServiceStatus> {
 export interface HealthResult {
   status: 'healthy' | 'degraded' | 'unavailable';
   services: {
-    bedrock: ServiceStatus;
+    qwen: ServiceStatus;
     chromadb: ServiceStatus;
     sqlite: ServiceStatus;
     email: ServiceStatus;
@@ -97,7 +97,7 @@ export interface HealthResult {
 
 export async function checkHealth(): Promise<HealthResult> {
   const [bedrock, chromadb, email] = await Promise.all([
-    checkBedrock(),
+    checkQwen(),
     checkChroma(),
     checkEmail(),
   ]);

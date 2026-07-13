@@ -1,6 +1,6 @@
 // src/agents/kbSearcher.ts
 // Knowledge-base semantic search. Falls back to in-memory KB when ChromaDB is unavailable.
-import { invokeEmbedding } from '../utils/bedrockClient.js';
+import { invokeEmbedding } from '../utils/qwenClient.js';
 import { logger } from '../utils/logger.js';
 import type { Ticket, KBSearchOutput } from '../types/ticket.js';
 

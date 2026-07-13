@@ -1,4 +1,4 @@
-// src/utils/bedrockClient.ts
+// src/utils/qwenClient.ts
 // Falls back to deterministic mock when Qwen API key is absent or Qwen is unreachable.
 
 import { logger } from './logger.js';
@@ -13,14 +13,14 @@ if (MOCK_MODE) {
   logger.info('[QwenClient] Running in MOCK mode — no Qwen API key found.');
 }
 
-export interface BedrockTextResult {
+export interface QwenTextResult {
   text: string;
   inputTokens: number;
   outputTokens: number;
   mock: boolean;
 }
 
-export interface BedrockEmbeddingResult {
+export interface QwenEmbeddingResult {
   embedding: number[];
   mock: boolean;
 }
@@ -29,7 +29,7 @@ export interface BedrockEmbeddingResult {
 export async function invokeText(
   systemPrompt: string,
   userPrompt: string
-): Promise<BedrockTextResult> {
+): Promise<QwenTextResult> {
   if (MOCK_MODE) {
     return mockText(systemPrompt, userPrompt);
   }
@@ -67,7 +67,7 @@ export async function invokeText(
 }
 
 /** Generate embedding vector via Qwen text-embedding model (or mock) */
-export async function invokeEmbedding(text: string): Promise<BedrockEmbeddingResult> {
+export async function invokeEmbedding(text: string): Promise<QwenEmbeddingResult> {
   if (MOCK_MODE) return mockEmbedding(text);
   try {
     const response = await fetch(`${QWEN_BASE_URL}/embeddings`, {
@@ -101,7 +101,7 @@ function deterministicSeed(s: string): number {
   return Math.abs(h);
 }
 
-function mockText(system: string, user: string): BedrockTextResult {
+function mockText(system: string, user: string): QwenTextResult {
   const seed = deterministicSeed(system.slice(0, 40) + user.slice(0, 40));
   const lower = user.toLowerCase();
 
@@ -165,7 +165,7 @@ function mockText(system: string, user: string): BedrockTextResult {
   return { text: `Mock response for: ${user.slice(0, 80)}`, inputTokens: 50, outputTokens: 20, mock: true };
 }
 
-function mockEmbedding(text: string): BedrockEmbeddingResult {
+function mockEmbedding(text: string): QwenEmbeddingResult {
   const seed = deterministicSeed(text.slice(0, 200));
   const DIM = 1536;
   const embedding = Array.from({ length: DIM }, (_, i) => {

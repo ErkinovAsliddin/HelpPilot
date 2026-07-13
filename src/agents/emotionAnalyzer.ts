@@ -1,5 +1,5 @@
 // src/agents/emotionAnalyzer.ts
-import { invokeText } from '../utils/bedrockClient.js';
+import { invokeText } from '../utils/qwenClient.js';
 import { logger } from '../utils/logger.js';
 
 export type EmotionalState = 'calm' | 'stressed' | 'angry' | 'desperate';

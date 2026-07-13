@@ -1,7 +1,7 @@
 // src/services/adminChatService.ts
 // Feature: helppilot — Admin AI Assistant backend
 
-import { invokeText } from '../utils/bedrockClient.js';
+import { invokeText } from '../utils/qwenClient.js';
 import { listTickets, countTickets } from '../db/ticketRepository.js';
 import { listIncidents } from '../db/incidentRepository.js';
 import { getSessionMetrics } from './sessionMetricsService.js';
